@@ -14,7 +14,7 @@ b. When we start the server we will get a "Using generated security password:". 
 
 c. When we access any resource from the server all we need to do is use the default user name "user" and the auto generated password when the server starts up.  
 
-## Inmemory Security (Project name: inmemory-security) - Custom Security type  
+## In-Memory Security (Project name: inmemory-security) - Custom Security type  
 
 a. The above security cannot be used for real time senarios and hence we move to our next type which is the custom in-memory security.    
 
