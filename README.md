@@ -1,4 +1,7 @@
 # Spring Security  
+### Basics of Security in Spring  
+####Authentication Filter will call ->  Authentication Manager will call -> Authentication Provider will call -> User Detail Service and Password Encoder  
+####Authentication Filter -> has the security context that has both Authentication Success Handler and Authentication Failure Handler  
 
 ## Simple basic security (Project name: basic-security)  
 
