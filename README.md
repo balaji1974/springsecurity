@@ -3,7 +3,7 @@
 ### Authentication Filter will call ->  Authentication Manager will call -> Authentication Provider will call -> User Detail Service and Password Encoder  
 ### Authentication Filter -> has the security context that has both Authentication Success Handler and Authentication Failure Handler  
 
-## Simple basic security (Project name: basic-security)  
+## 1. Simple basic security (Project name: basic-security)  
 
 a. To enable security in spring all we need to do is add the following dependency in our pom.xml file 
 ```xml  
@@ -17,7 +17,7 @@ b. When we start the server we will get a "Using generated security password:". 
 
 c. When we access any resource from the server all we need to do is use the default user name "user" and the auto generated password when the server starts up.  
 
-## In-Memory Security (Project name: inmemory-security) - Custom Security type  
+## 2. In-Memory Security (Project name: inmemory-security) - Custom Security type  
 
 a. The above security cannot be used for real time senarios and hence we move to our next type which is the custom in-memory security.    
 
@@ -25,7 +25,7 @@ b. For this we need to extend a Configuration class with WebSecurityConfigurerAd
 
 c. We also need to inject a bean for password encoder bean which is mandatory in Spring security now.  
 
-## Next 
+## 3. Next 
 
 
 
