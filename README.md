@@ -39,12 +39,12 @@ c. Check code for details of implementation of these methods.
 
 a. Often we will have situations where we will have more than one way in which the user needs to be authenticated into the application. So we need to provide Spring security with multiple ways in which we can authenticate our users.  
 
-b. This project is a combination of 2 and 3 steps described above.   
-Only change is in the protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {}  method used in SecurityConfiguration file where we add our 2 authentication builders as below:  
-authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);  
-authenticationManagerBuilder.inMemoryAuthentication().withUser("b1").password(passwordEncoder.encode("b1")).roles("USER");  
+b. This project is a combination of 2 and 3 steps described above.    
+Only change is in the protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {}  method used in SecurityConfiguration file where we add our 2 authentication builders as below:    
+authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);   
+authenticationManagerBuilder.inMemoryAuthentication().withUser("b1").password(passwordEncoder.encode("b1")).roles("USER");    
 
-c. The order of authentication checking will be the order in which we provide the Spring AuthenticationManagerBuilder our different methods of Authentication.  
+c. The order of authentication checking will be the order in which we provide the Spring AuthenticationManagerBuilder our different methods of Authentication.   
 
 
 
