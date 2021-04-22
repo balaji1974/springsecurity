@@ -46,6 +46,10 @@ authenticationManagerBuilder.inMemoryAuthentication().withUser("b1").password(pa
 
 c. The order of authentication checking will be the order in which we provide the Spring AuthenticationManagerBuilder our different methods of Authentication.   
 
+## 5. Form based authentication  
+
+
+
 
 
 
