@@ -21,8 +21,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		
 		InMemoryUserDetailsManager inMemoryUserDetailsManager=new InMemoryUserDetailsManager();
-		UserDetails user=User.withUsername("balaji").password(passwordEncoder.encode("balaji")).authorities("READ").build();
-		inMemoryUserDetailsManager.createUser(user);
+		UserDetails user1=User.withUsername("balaji").password(passwordEncoder.encode("balaji")).authorities("READ").build();
+		UserDetails user2=User.withUsername("test").password(passwordEncoder.encode("test")).authorities("READ").build();
+		inMemoryUserDetailsManager.createUser(user1);
+		inMemoryUserDetailsManager.createUser(user2);
 		authenticationManagerBuilder.userDetailsService(inMemoryUserDetailsManager).passwordEncoder(passwordEncoder);
 	}
 
