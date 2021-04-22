@@ -17,7 +17,7 @@ b. When we start the server we will get a "Using generated security password:". 
 
 c. When we access any resource from the server all we need to do is use the default user name "user" and the auto generated password when the server starts up.  
 
-## 2. In-Memory Security (Project name: inmemory-security) - Custom Security type  
+## 2. In-Memory Security (Project name: inmemory-security)   
 
 a. The above security cannot be used for real time senarios and hence we move to our next type which is the custom in-memory security.    
 
@@ -25,7 +25,18 @@ b. For this we need to extend a Configuration class with WebSecurityConfigurerAd
 
 c. We also need to inject a bean for password encoder bean which is mandatory in Spring security now.  
 
-## 3. Next 
+## 3. Custom Authentication Provider (Project name: custom-authentication-security)  
+
+a. Create a spring component class called CustomAuthenticaionProvider and implements org.springframework.security.authentication.AuthenticationProvider  
+
+b. Override the following 2 methods:  
+public Authentication authenticate(Authentication authentication) throws AuthenticationException {}  
+public boolean supports(Class<?> authentication) {}  
+
+c. Check code for details of implementation of these methods.  
+
+
+
 
 
 
