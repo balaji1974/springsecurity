@@ -46,7 +46,11 @@ authenticationManagerBuilder.inMemoryAuthentication().withUser("b1").password(pa
 
 c. The order of authentication checking will be the order in which we provide the Spring AuthenticationManagerBuilder our different methods of Authentication.   
 
-## 5. Form based authentication  
+## 5. Form based authentication (Project name: form-based-security)    
+a. For form based authentication do the following in the configure method of the class extending the WebSecurityConfigurerAdapter     
+httpSecurity.httpBasic() > Replace with  -> httpSecurity.formLogin();    
+
+b. Now you will be presented with a login form automatically and once you login you will be redirected to the requested resource.   
 
 
 
