@@ -54,13 +54,13 @@ b. Now you will be presented with a login form automatically and once you login 
 
 
 ## 6. Security Filters and Mulitple Spring boot security configurations (Project name: spring-security-filter)   
-a. For adding security filter all we need to do is add a class that impletements the Filter interface - eg. UsernamePasswordAuthenticationFilter or directly implement the filter interface.   
+a. For adding security filter all we need to do is add a class that impletements the Filter interface - eg. UsernamePasswordAuthenticationFilter, GenericFilterBean, OncePerRequestFilter etc.   
 
 b. Here we can add anything related to security like  additional "http headers" or any other information that is needed before/after the request gets processed.   
 
-c. In this example I have shown how to implement mulitple spring boot security configurations and ordering then using the @Order annotation. In this way we can clearly demark our REST apis from our web interface.   
+c. In this example I have shown how to implement mulitple spring boot security configurations and ordering them using the @Order annotation. In this way we can clearly segreggate our REST apis from our web apis.   
 
-d. I have added additional depenedency for my web pages    
+d. I have added additional depenedency for my web page    
 ```xml   
 <dependency>
 	<groupId>org.springframework.boot</groupId>
@@ -68,7 +68,9 @@ d. I have added additional depenedency for my web pages
 </dependency> 
 ```   
 
-e. I have added mulitple controllers, multiple security filters and multiple spring security configurations for both web and rest api based requests.   
+e. I have added mulitple controllers, multiple security filters and multiple spring security configurations for both web and rest api based requests.  
+
+f. Also note that by adding the GenericFilterBean instead of Filter interface we can inject variables from our web.xml file using getters and setter properties.       
 
 
 
