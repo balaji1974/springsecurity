@@ -72,8 +72,21 @@ e. I have added mulitple controllers, multiple security filters and multiple spr
 
 f. Also note that by adding the GenericFilterBean instead of Filter interface we can inject variables from our web.xml file using getters and setter properties.       
 
+## 6. Password Encoders (Project name: spring-security-passwordencoders)   
+a. I have added additional depenedency for support of SCryptPasswordEncoder     
+```xml   
+<dependency>
+    <groupId>org.bouncycastle</groupId>
+    <artifactId>bcprov-jdk15on</artifactId>
+    <version>1.68</version>
+</dependency>
+```   
 
+b. I have created a password encoder configuration class that supports 4 different types of password encoding based on the parameter that is set in application.properties file in the variable password.encoder   
 
+c. I have also created a DelegatingPasswordEncoder as a default configuration if and this takes its parameter from the DEFAULT_PASSWORD_ENCODER variable.   
+
+d. In this way you can enhance your spring application to support multiple types of password encodings.   
 
 
 
