@@ -42,7 +42,9 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter{
 	
 	// Configure custom authentication manager
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.antMatcher("/api/**").authorizeRequests().anyRequest().hasRole("ADMIN").and().httpBasic();   //.and().csrf().disable(); //not needed
+		httpSecurity.authorizeRequests().antMatchers("/api/**").hasRole("ADMIN")
+		//.antMatchers("/web/**").permitAll().anyRequest().denyAll() 
+		.and().httpBasic();   //.and().csrf().disable(); //not needed
 		httpSecurity.addFilterBefore(new ApiSecurityFilter(), BasicAuthenticationFilter.class);
 	}
 	

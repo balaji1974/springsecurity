@@ -53,7 +53,7 @@ httpSecurity.httpBasic() > Replace with  -> httpSecurity.formLogin();
 b. Now you will be presented with a login form automatically and once you login you will be redirected to the requested resource.   
 
 
-## 6. Security Filters and Mulitple Spring boot security configurations (Project name: spring-security-filter)   
+## 6. Security Filters and Mulitple Spring boot security configurations (REST/WEB in same application) (Project name: spring-security-filter)   
 a. For adding security filter all we need to do is add a class that impletements the Filter interface - eg. UsernamePasswordAuthenticationFilter, GenericFilterBean, OncePerRequestFilter etc.   
 
 b. Here we can add anything related to security like  additional "http headers" or any other information that is needed before/after the request gets processed.   
@@ -77,7 +77,7 @@ All WEB request will now have the path /web/** and all API request will follow t
 
 f. Also note that by adding the GenericFilterBean instead of Filter interface we can inject variables from our web.xml file using getters and setter properties.       
 
-## 7. Password Encoders (Project name: spring-security-passwordencoders)   
+## 7. Multiple Password Encoders (Project name: spring-security-passwordencoders)   
 a. I have added additional depenedency for support of SCryptPasswordEncoder     
 ```xml   
 <dependency>
@@ -119,5 +119,47 @@ spring.jpa.properties.hibernate.format_sql=true
 logging.level.org.hibernate.type=trace    
 
 c. In the WebSecurity configuration add the addition antmatchers to enable h2 console url access from the browser without authentication for now:    
-.antMatchers("/h2-console/\*\*").permitAll()   // never do this in production environment      
+.antMatchers("/h2-console/\*\*").permitAll()   // never do this in production environment  
+Also add the following 2 lines for the console to be accessed from the browser:   
+httpSecurity.csrf().disable();    
+httpSecurity.headers().frameOptions().disable();    
+
+d. Add data.sql in the resource folder which will auto create the intitial database insert scripts once the server starts up.    
+
+e. Start the server and check the following url to see if the h2 console is working fine.   
+http://localhost:8080/h2-console/    
+
+f. Now using spring data JPA concepts create Entities called User and Role. The User and Role are mapped to each other using ManyToMany mapping and it is specified both at the user and role entity class as follows:    
+In User Table:     
+@ManyToMany(fetch=FetchType.EAGER)   
+@JoinTable(   
+&nbsp;&nbsp;&nbsp;name = "user_role",   
+&nbsp;&nbsp;&nbsp;joinColumns = @JoinColumn(name = "user_id"),   
+&nbsp;&nbsp;&nbsp;inverseJoinColumns = @JoinColumn(name = "role_id")   
+)   
+private List<Role> roles;   
+
+
+And in the role table as:     
+@ManyToMany(mappedBy="roles")   
+private List<User> users;    
+
+The role table also implements the GrantedAuthority interface and overrides the method getAuthority as follows:   
+
+@Override
+public String getAuthority() {   
+&nbsp;&nbsp;&nbsp;return name;   
+}    
+
+g. Now create spring repository interface for these two entities by extending the JpaRepository. In the UserRepository interface add the following additional method.   
+User findByUsername(String username);    
+
+h. Next create a service method called UserDetailsServiceImpl which implements the org.springframework.security.core.userdetails.UserDetailsService.   
+Now override the method called loadUserByUsername that takes the username as input and returns the org.springframework.security.core.userdetails.UserDetails.   
+
+i. Next all we need to do is inject this UserDetailService implemenation class into our WebSecurityConfiguration class and add it in the configure method as:    
+authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);      
+
+We are now good to go and the application has now, one more method of authentication which is from the database.    
+
 
