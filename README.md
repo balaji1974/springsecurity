@@ -146,7 +146,7 @@ private List<User> users;
 
 The role table also implements the GrantedAuthority interface and overrides the method getAuthority as follows:   
 
-@Override
+@Override   
 public String getAuthority() {   
 &nbsp;&nbsp;&nbsp;return name;   
 }    
