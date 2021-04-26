@@ -66,9 +66,14 @@ d. I have added additional depenedency for my web page
 	<groupId>org.springframework.boot</groupId>
 	<artifactId>spring-boot-starter-thymeleaf</artifactId>
 </dependency> 
+<dependency>
+	<groupId>org.thymeleaf.extras</groupId>
+	<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+</dependency>
 ```   
 
-e. I have added mulitple controllers, multiple security filters and multiple spring security configurations for both web and rest api based requests.  
+e. I have added mulitple controllers, multiple security filters and multiple spring security configurations for both web and rest api based requests.   
+All WEB request will now have the path /web/** and all API request will follow the path /api/**    
 
 f. Also note that by adding the GenericFilterBean instead of Filter interface we can inject variables from our web.xml file using getters and setter properties.       
 
@@ -88,5 +93,31 @@ c. I have also created a DelegatingPasswordEncoder as a default configuration an
 
 d. In this way you can enhance your spring application to support multiple types of password encodings.   
 
+## 8. Database Authenication Provider (Project name: database-authentication-provider)   
+a. I have added additional depenedency for support H2 Database and Spring Data JPA over the already existing dependencies before.     
+```xml   
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+	<scope>runtime</scope>
+</dependency>
+```  
 
+b. In the application.properties file add the following properties to enable h2 console and hibernate statistics:   
+pring.h2.console.enabled=true    
+spring.datasource.url=jdbc:h2:mem:testdb    
+&nbsp;    
+spring.jpa.properties.hibernate.generate_statistics=true    
+logging.level.org.hibernate.stat=debug    
+&nbsp;    
+spring.jpa.show-sql=true   
+spring.jpa.properties.hibernate.format_sql=true   
+logging.level.org.hibernate.type=trace    
+
+c. In the WebSecurity configuration add the addition antmatchers to enable h2 console url access from the browser without authentication for now:    
+.antMatchers("/h2-console/\*\*").permitAll()   // never do this in production environment      
 
