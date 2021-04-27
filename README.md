@@ -162,4 +162,25 @@ authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEnco
 
 We are now good to go and the application has now, one more method of authentication which is from the database.    
 
+### 9. Custom Login Page (Project name: custom-login-service)   
+a. In this project I have implemented our own custom login page, but before that I cleaned up the code to remove multiple authentication managers and left only the database authentication method for simplicity.   
+
+b. We need to implement a SecurityServiceImpl with one default method for login which accepts username and password.   
+
+c. Inside this method we can load our previously created UserDetailService and get the userdetails and pass it to the UsernamePasswordAuthenticationToken to get an authentication token.   
+
+d. Next we need to pass this authentication token to the spring's authentication manager which we need to expose as a bean from our WebSecurityConfiguration    
+
+e. Finally if the token is authenticated we set this authentication manually ourselves inside the SecurityContextHolder and return the boolean result of the token's authentication status.    
+
+f. Based on this return value our controller can map to the main page or back to the login page if the authentication fails.    
+
+g. We must not forget to add all our newly created pages to the antMatchers to be either authorized or to permit them without authorization.    
+
+
+
+
+
+
+
 
