@@ -178,6 +178,15 @@ f. Based on this return value our controller can map to the main page or back to
 g. We must not forget to add all our newly created pages to the antMatchers to be either authorized or to permit them without authorization.    
 
 
+### 10. Preventing ButeForce Attack using spring security 
+https://www.baeldung.com/spring-security-block-brute-force-authentication-attempts
+
+
+### 11. Preventing DDoS Attacks in spring security using additional libriaries 
+https://stackoverflow.com/questions/39634868/restrict-access-to-public-service-many-times
+https://bucket4j.com/
+https://github.com/shlomokoren/spring-boot-throttling
+
 
 
 
