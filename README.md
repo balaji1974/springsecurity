@@ -250,7 +250,9 @@ allow access.
 6. The token is created with validity and roles that are authroized which can be easily decoded by other services using the same 
 token that was used for generating the token 
 
-7. Futher details of how other services can use this token will be given in the below example. 
+7. A sample Postmap json is added for testing and sample data.sql file is given for ease of initial inserts. 
+
+8. Futher details of how other services can use this token will be given in the below example. 
 
 
 ```
