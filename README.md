@@ -178,14 +178,100 @@ f. Based on this return value our controller can map to the main page or back to
 g. We must not forget to add all our newly created pages to the antMatchers to be either authorized or to permit them without authorization.    
 
 
-### 10. Preventing ButeForce Attack using spring security 
+### 10. Creating an authorization server for my microservices using JWT authentication token (Project name: authentication-service)
+```xml
+1. Create the following dependencies
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-devtools</artifactId>
+	<scope>runtime</scope>
+	<optional>true</optional>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+<dependency>
+	<groupId>javax.xml.bind</groupId>
+	<artifactId>jaxb-api</artifactId>
+</dependency>
+<dependency>
+	<groupId>mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+2. Add the following in the application.properties
+#secret key - should be encrypted
+sec.app.jwtSecret=mysecrectkey
+# validity is for 30 days - which will be the default if not passed during creation time 
+sec.app.jwtExpirationMs=2592000000
+
+
+## Local Connection 
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/servicesecurity
+spring.datasource.username=security-user
+#change this pwd later
+spring.datasource.password=secusr$1$2
+spring.jpa.hibernate.ddl-auto=update
+# to uncomment this line for inserting the initial data from data.sql
+# spring.datasource.initialization-mode=always
+
+
+# For error handling
+server.error.include-stacktrace=ON_PARAM
+spring.mvc.throw-exception-if-no-handler-found=true
+spring.web.resources.add-mappings=false
+
+3. REST services users are created from rest end point /api/auth//signup
+
+4. Login in performed from the endpoint /api/auth/login
+
+5. After login a JWT token is created and added to the response body which can be used by other sevices to validate the token and 
+allow access.
+
+6. The token is created with validity and roles that are authroized which can be easily decoded by other services using the same 
+token that was used for generating the token 
+
+7. Futher details of how other services can use this token will be given in the below example. 
+
+
+```
+
+
+### 11. Preventing ButeForce Attack using spring security 
 https://www.baeldung.com/spring-security-block-brute-force-authentication-attempts
 
 
-### 11. Preventing DDoS Attacks in spring security using additional libriaries 
+### 12. Preventing DDoS Attacks in spring security using additional libriaries 
 https://stackoverflow.com/questions/39634868/restrict-access-to-public-service-many-times
 https://bucket4j.com/
 https://github.com/shlomokoren/spring-boot-throttling
+
+
+
+References:
+https://spring.io/guides/gs/securing-web/
+https://www.bezkoder.com/spring-boot-jwt-authentication/
+https://jwt.io/
+https://www.epochconverter.com/
 
 
 

@@ -1,0 +1,3 @@
+INSERT INTO roles(id,name) VALUES (1,'ROLE_CUSTOMER1');
+INSERT INTO roles(id,name) VALUES (2,'ROLE_CUSTOMER2');
+INSERT INTO roles(id,name) VALUES (3,'ROLE_ADMIN');
