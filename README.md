@@ -257,6 +257,243 @@ token that was used for generating the token
 
 ```
 
+## Using HashiCorp Vault (vault-demo) 
+```xml   
+Install and start vault - Create a compose.yaml file with the following config:
+services:
+  vault:
+    container_name: "guide-vault"
+    image: hashicorp/vault:latest
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "00000000-0000-0000-0000-000000000000"
+    ports:
+      - "8200:8200"
+
+Next start the container by using:
+docker compose up 
+
+Once the container starts connect to the running Docker container with the command:
+docker exec -it guide-vault sh
+
+You are now running commands inside of the HashiCorp Vault container.
+First, you need to set two environment variables to point the Vault CLI 
+to the Vault endpoint and provide an authentication token.
+export VAULT_TOKEN="00000000-0000-0000-0000-000000000000"
+export VAULT_ADDR="http://127.0.0.1:8200"
+
+Now you can store configuration key-value pairs inside Vault. 
+In this example, you store two key-value pairs:
+vault kv put secret/gs-vault-config example.username=demouser example.password=demopassword
+vault kv put secret/gs-vault-config/cloud example.username=clouduser example.password=cloudpassword
+
+Now you have written two entries in Vault secret/gs-vault-config and secret/gs-vault-config/cloud
+
+The running vault container can be accessed from the URL:
+http://127.0.0.1:8200
+Login Method: Token
+Token: 00000000-0000-0000-0000-000000000000
+
+Now from the Spring Initilizer add the following 2 dependencies 
+and download and import the project:
+Web
+DevTools
+Vault Config
+
+Your pom.xml file will have the following dependencies:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-vault-config</artifactId>
+</dependency>
+
+Add one more additional dependency for adding and reading key-values into vault
+<dependency>
+    <groupId>org.springframework.vault</groupId>
+    <artifactId>spring-vault-core</artifactId>
+</dependency>
+
+Next in the application.properties file add the following value:
+spring.cloud.vault.uri=http://127.0.0.1:8200
+spring.cloud.vault.token=00000000-0000-0000-0000-000000000000
+spring.cloud.vault.scheme=http
+spring.cloud.vault.kv.enabled=true
+spring.cloud.vault.kv.backend=secret
+spring.cloud.vault.kv.default-context=gs-vault-config
+
+Next create a VaultService class to read and 
+write values to Vault using the VaultTemplate
+@Service
+public class VaultService {
+    @Autowired
+    private VaultTemplate vaultTemplate;
+    
+    public void writeSecret(String path, Map<String, String> secrets) {
+        VaultKeyValueOperations operations = vaultTemplate.opsForKeyValue("secret", VaultKeyValueOperationsSupport.KeyValueBackend.KV_2);
+        operations.put(path, secrets);
+    }
+   
+    public Map<String, Object> readSecret(String path) {
+        VaultResponse response = vaultTemplate.opsForKeyValue("secret", VaultKeyValueOperationsSupport.KeyValueBackend.KV_2).get(path);
+        return response.getData();
+    }
+}
+
+Next in the main application class, VaultDemoApplication implement command runner 
+and test the application:
+@SpringBootApplication
+public class VaultDemoApplication implements CommandLineRunner{
+	
+	@Autowired
+    private VaultService vaultService;
+	
+	@Autowired
+	private VaultTemplate vaultTemplate;
+
+	public static void main(String[] args) {
+		SpringApplication.run(VaultDemoApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		// Write into vault
+		Map<String, String> secrets = new HashMap<>();
+        secrets.put("apiKey", "12345");
+        secrets.put("apiSecret", "67890");
+        vaultService.writeSecret("api/credentials", secrets);
+		
+        //Read the values written
+		Map<String, Object> readSecrets = vaultService.readSecret("api/credentials");
+        System.out.println("Read Secrets: " + readSecrets);
+        
+        // Read key-value pair already inside vault
+        readSecrets = vaultService.readSecret("gs-vault-config");
+        System.out.println("Read Secrets: " + readSecrets);
+		
+        
+        // Another way to read
+        VaultResponse response = vaultTemplate
+                .opsForKeyValue("secret", KeyValueBackend.KV_2).get("gs-vault-config");
+        System.out.println("Value of gs-vault-config");
+        System.out.println("-------------------------------");
+        System.out.println(response.getData().get("example.username"));
+        System.out.println(response.getData().get("example.password"));
+        System.out.println("-------------------------------");
+        System.out.println();
+        
+        
+        // Let's encrypt some data using the Transit backend.
+        VaultTransitOperations transitOperations = vaultTemplate.opsForTransit();
+
+        // We need to setup transit first (assuming you didn't set up it yet).
+        VaultSysOperations sysOperations = vaultTemplate.opsForSys();
+
+        if (!sysOperations.getMounts().containsKey("transit/")) {
+
+          sysOperations.mount("transit", VaultMount.create("transit"));
+
+          transitOperations.createKey("foo-key");
+        }
+
+        // Encrypt a plain-text value
+        String ciphertext = transitOperations.encrypt("foo-key", "Secure message");
+
+        System.out.println("Encrypted value");
+        System.out.println("-------------------------------");
+        System.out.println(ciphertext);
+        System.out.println("-------------------------------");
+        System.out.println();
+
+        // Decrypt
+
+        String plaintext = transitOperations.decrypt("foo-key", ciphertext);
+
+        System.out.println("Decrypted value");
+        System.out.println("-------------------------------");
+        System.out.println(plaintext);
+        System.out.println("-------------------------------");
+        System.out.println();
+	}
+
+}
+
+```
+
+## Using HashiCorp Vault (another-vault-demo) 
+```xml  
+Another Vault Demo is a client application that can connect to vault and fetch secrets.
+To check this please follow the below step.
+
+Make sure that the vault server is started (as per previous example)
+or else start the container as per the previous example 
+
+Once the container starts connect to the running Docker container with the command:
+docker exec -it guide-vault sh
+
+You are now running commands inside of the HashiCorp Vault container.
+First, you need to set two environment variables to point the Vault CLI 
+to the Vault endpoint and provide an authentication token.
+export VAULT_TOKEN="00000000-0000-0000-0000-000000000000"
+export VAULT_ADDR="http://127.0.0.1:8200"
+
+Now you can store configuration key-value pairs inside Vault. 
+In this example, you store user name and password as key-value pairs inside Vault:
+vault kv put secret/another-vault-demo database.username=demouser database.password=demopassword
+
+Note: the secret/anther-valut-demo (is the application name)
+
+Next create a spring project with the following dependencies:
+Web
+DevTools
+Vault config
+
+Download the project and load into your IDE. 
+You will see the following main dependency in your pom.xml file:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-vault-config</artifactId>
+</dependency>
+
+Next in the application.properties use the following config
+to connect to the server:
+spring.cloud.vault.uri=http://localhost:8200
+spring.cloud.vault.authentication=TOKEN
+spring.cloud.vault.token=00000000-0000-0000-0000-000000000000
+spring.config.import=vault://
+
+Next create a component class to read the secrets from the vault
+using the @Value property and print it. 
+
+@Component
+public class DbConfig {
+	@Value("${database.password}")
+    private String dbPassword;
+	
+	@Value("${database.username}")
+    private String userName;
+	
+	@PostConstruct
+    public void init() {
+        // Initialization logic after construction and dependency injection
+        System.out.println("DbConfig bean initialized!");
+        System.out.println(userName);
+        System.out.println(dbPassword);
+    }	
+}
+
+Run the program to see the secret being read from Vault 
+and printed onto the console.
+
+
+Note: ### The above 2 examples use vault in-memory mode and 
+all secrets are lost when the server restarts. To prevent this use vault 
+with persistent storage. 
+Using a database secret backend requires to enable the backend in the configuration 
+and the spring-cloud-vault-config-databases dependency.
+More details can be got from here:
+https://docs.spring.io/spring-cloud-vault/docs/current/reference/html/#vault.config.backends.database-backends
+
+
+```
+
 
 ### 11. Preventing ButeForce Attack using spring security 
 https://www.baeldung.com/spring-security-block-brute-force-authentication-attempts
@@ -274,7 +511,8 @@ https://spring.io/guides/gs/securing-web/
 https://www.bezkoder.com/spring-boot-jwt-authentication/
 https://jwt.io/
 https://www.epochconverter.com/
-
+https://developer.hashicorp.com/vault/tutorials/get-started/install-binary
+https://spring.io/guides/gs/vault-config
 
 
 
